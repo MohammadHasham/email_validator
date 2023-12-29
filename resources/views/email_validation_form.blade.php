@@ -45,6 +45,10 @@
             @if(session('error'))
                 <div style="color: red;">{{ session('error') }}</div>
             @endif
+
+            @if(session('disposalStatus'))
+                <div style="color: blue;">Email Disposal Status: {{ session('disposalStatus') }}</div>
+            @endif
         </div>
     </div>
 </div>
