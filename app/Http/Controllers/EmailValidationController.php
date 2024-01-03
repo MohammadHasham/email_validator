@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 
 class EmailValidationController extends Controller
@@ -58,11 +58,18 @@ class EmailValidationController extends Controller
     {
         
         $userEmailDomain = strtolower(explode('@', $email)[1]);
-        $filePath = storage_path('app/domains.txt');
-        $content = Storage::get('domains.txt');
-        $disposableDomains = array_map('trim', array_map('strtolower', explode("\n", $content)));
+    
+        $disposableDomains = DB::table('domains')
+            ->select('name')
+            ->get()
+            ->pluck('name')
+            ->map(function ($domain) {
+                return trim(strtolower($domain));
+            })
+            ->toArray();
+    
         $result = in_array($userEmailDomain, $disposableDomains) ? 'Disposable' : 'Not Disposable';
-
+    
         return $result;
     }
 
